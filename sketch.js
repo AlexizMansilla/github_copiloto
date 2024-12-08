@@ -4,9 +4,9 @@ class Pelota {
         this.y = y;
         this.diameter = diameter;
         //velocidad del sentido incial de la pelota sea un valor aleatorio, utliza Math.random()
-        this.vx = vx * (Math.random() < 0.5 ? -1 : 1);
-        this.vy = vy * (Math.random() < 0.5 ? -1 : 1);
-
+        this.vx = vx ;
+        this.vy = vy ;
+        this.reset();
        
     }
 
@@ -21,11 +21,19 @@ class Pelota {
         if (this.y > height - this.diameter / 2 || this.y < this.diameter / 2) {
             this.vy *= -1;
         }
+        //si colisiona con la raqueta del jugador o la computadora, invierte el sentido y aumenta la velocidad en 10%
+        if (collision(this.x, this.y, this.diameter, raqueta.x, raqueta.y, raqueta.width, raqueta.height) || collision(this.x, this.y, this.diameter, computadora.x, computadora.y, computadora.width, computadora.height)) {
+            this.vx *= -1.1;
+            this.vy *= -1.1;
+        }
+        
     }
 
     reset() {
         this.x = 400;
         this.y = 200;
+        this.vx = 5 * (Math.random() < 0.5 ? -1 : 1);
+        this.vy = 5 * (Math.random() < 0.5 ? -1 : 1);
     }
 
     draw() {
@@ -43,10 +51,22 @@ class Raqueta {
     }
 
     update() {
-       //quiero mover la raqueta con el mouse,de arriba hacia abajo
-       this.y += mouseY - this.y;
-       //limitar el movimiento de la raqueta, para que no se salga de la pantalla
-       this.y = constrain(this.y, 0, height - this.height); 
+        //raqueta del jugador se mueve con el mouse
+        //identifica si la raqueta es la del jugador,raqueta del jugador es la de la de la izquierda
+        if (this.x < width / 2) {
+            this.y = mouseY;
+        } else {
+            //raqueta de la computadora se mueve siguiendo la pelota
+            if (pelota.y > this.y) {
+                this.y += this.speed;
+            } else {
+                this.y -= this.speed;
+            }
+        }
+        //limita el movimiento de la raqueta, para que no se salga de la pantalla
+        this.y = constrain(this.y, 0, height - this.height);
+        
+
     }
 
     draw() {
@@ -54,13 +74,40 @@ class Raqueta {
     }
 }
 
+
 let pelota;
 let raqueta;
+let computadora;
+
+//verificar la colision entre una circunferencia y un rectangulo
+//circunferencia cx,cy,diametro
+//rectangulo rx,ry,width,height
+function collision(cx, cy, cd, rx, ry, rw, rh) {
+    //si el circulo esta a la izquierda del rectangulo
+        if (cx + cd / 2 < rx) {
+            return false;
+        }
+        //si el circulo esta a la arriba del rectangulo
+        if (cy + cd / 2 < ry) {
+            return false;
+        }
+        //si el circulo esta a la derecha del rectangulo
+        if (cx - cd / 2 > rx + rw) {
+            return false;
+        }
+        //si el circulo esta abajo del rectangulo
+        if (cy - cd / 2 > ry + rh) {
+            return false;
+        }
+        return true;
+    }
+
 
 function setup() {
     createCanvas(800, 400);
     pelota = new Pelota(400, 200, 50, 5, 5);
-    raqueta = new Raqueta(30, 150, 20, 100, 5);
+    raqueta = new Raqueta(20, 150, 20, 100, 5);
+    computadora = new Raqueta(760, 150, 20, 100, 5);
 }
 
 function draw() {
@@ -69,5 +116,7 @@ function draw() {
     pelota.draw();
     raqueta.update();
     raqueta.draw();
+    computadora.update();
+    computadora.draw();
 }
    
