@@ -1,69 +1,73 @@
-const diameter = 50;
-
-//crea variable de velocidad para la pelota
-let vx = 5; 
-let vy = 5;
-
-//función setup del p5.js
-function setup() {
-  createCanvas(800, 400);
-}
-
-//función draw del p5.js
-function draw() {
-  background(0);
-  //dibuja la pelota del juego usando la función circle de p5.js
-  circle(x, y, diameter);
-  //mueve la pelota usando la variable de velocidad
-  x = x + vx;
-  y = y + vy;
-
-  //si la pelota llega a los bordes de la pantalla, cambia la dirección
-  if(x > width - diameter / 2 || x < diameter / 2){
-    vx = -vx; 
-  }
-  if(y > height - diameter / 2 || y < diameter / 2){
-    vy = -vy;
-  }
-}
 class Pelota {
-  constructor(x, y, diameter, vx, vy) {
-    this.x = x;
-    this.y = y;
-    this.diameter = diameter;
-    this.vx = vx;
-    this.vy = vy;
-  }
+    constructor(x, y, diameter, vx, vy) {
+        this.x = x;
+        this.y = y;
+        this.diameter = diameter;
+        //velocidad del sentido incial de la pelota sea un valor aleatorio, utliza Math.random()
+        this.vx = vx * (Math.random() < 0.5 ? -1 : 1);
+        this.vy = vy * (Math.random() < 0.5 ? -1 : 1);
 
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-
-    if (this.x > width - this.diameter / 2 || this.x < this.diameter / 2) {
-      this.vx = -this.vx;
+       
     }
-    if (this.y > height - this.diameter / 2 || this.y < this.diameter / 2) {
-      this.vy = -this.vy;
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x > width - this.diameter / 2 || this.x < this.diameter / 2) {
+            this.reset();
+        }
+
+        if (this.y > height - this.diameter / 2 || this.y < this.diameter / 2) {
+            this.vy *= -1;
+        }
     }
-  }
 
-  reset(x, y) {
-    this.x = x;
-    this.y = y;
-  }
+    reset() {
+        this.x = 400;
+        this.y = 200;
+    }
 
-  draw() {
-    circle(this.x, this.y, this.diameter);
-  }
+    draw() {
+        circle(this.x, this.y, this.diameter);
+    }
 }
 
-let pelota = new Pelota(100, 100, diameter, vx, vy);
+class Raqueta {
+    constructor(x, y, width, height, speed) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.speed = speed;
+    }
+
+    update() {
+       //quiero mover la raqueta con el mouse,de arriba hacia abajo
+       this.y += mouseY - this.y;
+       //limitar el movimiento de la raqueta, para que no se salga de la pantalla
+       this.y = constrain(this.y, 0, height - this.height); 
+    }
+
+    draw() {
+        rect(this.x, this.y, this.width, this.height);
+    }
+}
+
+let pelota;
+let raqueta;
+
+function setup() {
+    createCanvas(800, 400);
+    pelota = new Pelota(400, 200, 50, 5, 5);
+    raqueta = new Raqueta(30, 150, 20, 100, 5);
+}
 
 function draw() {
-  background(0);
-  pelota.update();
-  pelota.draw();
+    background(0);
+    pelota.update();
+    pelota.draw();
+    raqueta.update();
+    raqueta.draw();
 }
-
-  
    
