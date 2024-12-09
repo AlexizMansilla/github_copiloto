@@ -1,6 +1,7 @@
 let imagenPelota;
 let imagenRaqueta;
 let imagenComputadora;
+let imagenFondo;
 class Pelota {
     constructor(x, y, diameter, vx, vy) {
         this.x = x;
@@ -16,6 +17,9 @@ class Pelota {
     update() {
         this.x += this.vx;
         this.y += this.vy;
+
+        //aumenta la retacion de la pelota con la velocidad en el eje x y la velocidad en el eje y
+        this.rotation += this.vx + this.vy;
 
         if (this.x > width - this.diameter / 2 || this.x < this.diameter / 2) {
             this.reset();
@@ -37,12 +41,19 @@ class Pelota {
         this.y = 200;
         this.vx = 5 * (Math.random() < 0.5 ? -1 : 1);
         this.vy = 5 * (Math.random() < 0.5 ? -1 : 1);
+        //rotacion actual de la pelota
+        this.rotation = 0;
     }
 
     draw() {
         //dibujar la pelota con una imagen en lugar de un circulo
-        image(imagenPelota, this.x - this.diameter / 2, this.y - this.diameter / 2, this.diameter, this.diameter);
-
+        //rotaciona la pelota antes de dibujarla
+        push();
+        translate(this.x, this.y);
+        rotate(this.rotation);
+        image(imagenPelota, -this.diameter / 2, -this.diameter / 2, this.diameter, this.diameter);
+        pop();  
+        
         //circle(this.x, this.y, this.diameter);
     }
 }
@@ -117,6 +128,7 @@ function preload() {
     imagenPelota = loadImage("pelota.png");
     imagenRaqueta = loadImage("raqueta1.png");   
     imagenComputadora = loadImage("computadora.png");
+    imagenFondo = loadImage("fondo2.png");
 }
 
 function setup() {
@@ -127,7 +139,10 @@ function setup() {
 }
 
 function draw() {
-    background(0);
+    //background(0);
+    //dibujar el fondo
+    image(imagenFondo, 0, 0, width, height);
+
     pelota.update();
     pelota.draw();
     raqueta.update();
