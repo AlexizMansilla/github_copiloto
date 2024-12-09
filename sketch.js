@@ -1,3 +1,6 @@
+let imagenPelota;
+let imagenRaqueta;
+let imagenComputadora;
 class Pelota {
     constructor(x, y, diameter, vx, vy) {
         this.x = x;
@@ -37,7 +40,10 @@ class Pelota {
     }
 
     draw() {
-        circle(this.x, this.y, this.diameter);
+        //dibujar la pelota con una imagen en lugar de un circulo
+        image(imagenPelota, this.x - this.diameter / 2, this.y - this.diameter / 2, this.diameter, this.diameter);
+
+        //circle(this.x, this.y, this.diameter);
     }
 }
 
@@ -70,7 +76,13 @@ class Raqueta {
     }
 
     draw() {
-        rect(this.x, this.y, this.width, this.height);
+        //si raqueta jugador dibuja la raqueta con la imagen de la raqueta del jugador
+        if (this.x < width / 2) {
+            image(imagenRaqueta, this.x, this.y, this.width, this.height);
+        } else {
+            image(imagenComputadora, this.x, this.y, this.width, this.height);
+        }
+        //rect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -82,26 +94,30 @@ let computadora;
 //verificar la colision entre una circunferencia y un rectangulo
 //circunferencia cx,cy,diametro
 //rectangulo rx,ry,width,height
-function collision(cx, cy, cd, rx, ry, rw, rh) {
+function collision(cx, cy, diameter, rx, ry, rw, rh) {
     //si el circulo esta a la izquierda del rectangulo
-        if (cx + cd / 2 < rx) {
+        if (cx + diameter / 2 < rx) {
             return false;
         }
         //si el circulo esta a la arriba del rectangulo
-        if (cy + cd / 2 < ry) {
+        if (cy + diameter / 2 < ry) {
             return false;
         }
         //si el circulo esta a la derecha del rectangulo
-        if (cx - cd / 2 > rx + rw) {
+        if (cx - diameter / 2 > rx + rw) {
             return false;
         }
         //si el circulo esta abajo del rectangulo
-        if (cy - cd / 2 > ry + rh) {
+        if (cy - diameter / 2 > ry + rh) {
             return false;
         }
         return true;
-    }
-
+}
+function preload() {
+    imagenPelota = loadImage("pelota.png");
+    imagenRaqueta = loadImage("raqueta1.png");   
+    imagenComputadora = loadImage("computadora.png");
+}
 
 function setup() {
     createCanvas(800, 400);
