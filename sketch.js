@@ -3,6 +3,8 @@ let imagenRaqueta;
 let imagenComputadora;
 let imagenFondo;
 let sonidoRaqueta;
+let sonidoGol;
+
 class Pelota {
     constructor(x, y, diameter, vx, vy) {
         this.x = x;
@@ -23,6 +25,7 @@ class Pelota {
         this.rotation += this.vx + this.vy;
 
         if (this.x > width - this.diameter / 2 || this.x < this.diameter / 2) {
+           sonidoGol.play();
             this.reset();
         }
 
@@ -133,6 +136,7 @@ function preload() {
     imagenComputadora = loadImage("computadora.png");
     imagenFondo = loadImage("fondo2.png");
     sonidoRaqueta = loadSound("446100__justinvoke__bounce.wav");
+    sonidoGol = loadSound("274178__littlerobotsoundfactory__jingle_win_synth_02.wav");
 }
 
 function setup() {
