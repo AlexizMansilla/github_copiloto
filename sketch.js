@@ -2,6 +2,7 @@ let imagenPelota;
 let imagenRaqueta;
 let imagenComputadora;
 let imagenFondo;
+let sonidoRaqueta;
 class Pelota {
     constructor(x, y, diameter, vx, vy) {
         this.x = x;
@@ -30,6 +31,8 @@ class Pelota {
         }
         //si colisiona con la raqueta del jugador o la computadora, invierte el sentido y aumenta la velocidad en 10%
         if (collision(this.x, this.y, this.diameter, raqueta.x, raqueta.y, raqueta.width, raqueta.height) || collision(this.x, this.y, this.diameter, computadora.x, computadora.y, computadora.width, computadora.height)) {
+            sonidoRaqueta.play();
+            this.vx *=1;
             this.vx *= -1.1;
             this.vy *= -1.1;
         }
@@ -129,6 +132,7 @@ function preload() {
     imagenRaqueta = loadImage("raqueta1.png");   
     imagenComputadora = loadImage("computadora.png");
     imagenFondo = loadImage("fondo2.png");
+    sonidoRaqueta = loadSound("446100__justinvoke__bounce.wav");
 }
 
 function setup() {
